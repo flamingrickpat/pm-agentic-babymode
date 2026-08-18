@@ -22,6 +22,8 @@ sleepiness and nutrition systems that force strategic food planning.
   - `player.movementSpeedMultiplier` (default 1.5×), `player.miningSpeedMultiplier` (default 5×)
   - `environment.drowningTimeMultiplier` (default 10× longer underwater)
   - Natural regeneration forced off (`player.naturalRegeneration`)
+  - Items within `player.pickupRange` blocks of a player get pulled into their
+    inventory (default 6.0; vanilla pickup rules still apply — no new mixin)
 - **Sleepiness** (per player, persisted in the world)
   - Builds up purely over in-game time: 0 → 100 over `sleepiness.fullAfterDays` (default 2.5 days)
   - **The only reset is right-clicking a bed** — works even during the day
@@ -58,7 +60,7 @@ sleepiness and nutrition systems that force strategic food planning.
 `/babymode status json` output example:
 
 ```json
-{"version":"0.1.1","sleepiness":73.0,"fatigue":73.0,"nutrition":{"grain":89.0,"protein":41.0,"produce":67.0},"health":17.0,"maxHealth":20.0,"hunger":14,"air":300,"effects":[{"id":"minecraft:slowness","amplifier":1,"duration":190}]}
+{"version":"0.1.2","sleepiness":73.0,"fatigue":73.0,"nutrition":{"grain":89.0,"protein":41.0,"produce":67.0},"health":17.0,"maxHealth":20.0,"hunger":14,"air":300,"effects":[{"id":"minecraft:slowness","amplifier":1,"duration":190}]}
 ```
 
 The `fatigue` field is an alias for `sleepiness` (older integrations keep working).
@@ -74,7 +76,8 @@ Every value is optional; missing values fall back to defaults.
     "movementSpeedMultiplier": 1.5,
     "miningSpeedMultiplier": 5.0,
     "naturalRegeneration": false,
-    "pvp": false
+    "pvp": false,
+    "pickupRange": 6.0
   },
   "environment": {
     "drowningTimeMultiplier": 10.0,
@@ -108,7 +111,7 @@ Every value is optional; missing values fall back to defaults.
 ## Installation (LAN host)
 
 1. Install Fabric API (any 1.19.4 release, e.g. `0.87.2+1.19.4`) as a normal mod.
-2. Drop `agentic-babymode-0.1.1.jar` into the instance's `mods` folder.
+2. Drop `agentic-babymode-0.1.2.jar` into the instance's `mods` folder.
 3. Launch, open a world, **Open to LAN**.
 4. Join with Mineflayer or vanilla clients — they do **not** need the mod.
 
@@ -117,7 +120,7 @@ Every value is optional; missing values fall back to defaults.
 Requirements: JDK 17, Git, internet (Gradle fetches Loom/Yarn/Fabric automatically).
 
 ```
-./gradlew.bat build        # compile + test + produce build/libs/agentic-babymode-0.1.1.jar
+./gradlew.bat build        # compile + test + produce build/libs/agentic-babymode-0.1.2.jar
 ./gradlew.bat runServer    # headless smoke test (eula.txt in run/)
 ./gradlew.bat runClient    # full client (needs a display)
 ```
