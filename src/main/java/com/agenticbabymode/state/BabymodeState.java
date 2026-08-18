@@ -38,7 +38,7 @@ public class BabymodeState extends PersistentState {
 			NbtCompound tag = new NbtCompound();
 			tag.putUuid("uuid", entry.getKey());
 			PlayerState ps = entry.getValue();
-			tag.putDouble("fatigue", ps.fatigue);
+			tag.putDouble("sleepiness", ps.sleepiness);
 			tag.putDouble("grain", ps.grain);
 			tag.putDouble("protein", ps.protein);
 			tag.putDouble("produce", ps.produce);
@@ -56,7 +56,7 @@ public class BabymodeState extends PersistentState {
 				NbtCompound tag = list.getCompound(i);
 				UUID uuid = tag.getUuid("uuid");
 				PlayerState ps = PlayerState.defaults();
-				ps.fatigue = tag.getDouble("fatigue");
+				ps.sleepiness = tag.contains("sleepiness") ? tag.getDouble("sleepiness") : tag.getDouble("fatigue");
 				ps.grain = tag.getDouble("grain");
 				ps.protein = tag.getDouble("protein");
 				ps.produce = tag.getDouble("produce");

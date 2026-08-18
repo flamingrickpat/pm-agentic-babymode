@@ -6,6 +6,7 @@
   "refmap": "agentic-babymode-refmap.json",
   "mixins": [
     "LivingEntityAirMixin",
+    "HungerManagerMixin",
     "PlayerEntityAttackMixin",
     "PlayerEntityMiningSpeedMixin",
     "PlayerEntityEatFoodMixin",

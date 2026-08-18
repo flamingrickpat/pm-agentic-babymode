@@ -4,7 +4,7 @@ import com.agenticbabymode.config.ConfigManager;
 import com.agenticbabymode.config.ModConfig;
 import com.agenticbabymode.server.BabymodeServer;
 import com.agenticbabymode.state.PlayerState;
-import com.agenticbabymode.system.FatigueSystem;
+import com.agenticbabymode.system.SleepinessSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,7 +27,7 @@ public abstract class PlayerEntityMiningSpeedMixin {
 		if (server != null) {
 			PlayerState ps = server.getState() != null ? server.getState().get(self.getUuid()) : null;
 			if (ps != null) {
-				fatigueFactor = FatigueSystem.movementFactor(ps.fatigue, cfg.fatigue.movementPenaltyPercent);
+				fatigueFactor = SleepinessSystem.movementFactor(ps.sleepiness, cfg.sleepiness.penaltyPercent);
 			}
 		}
 		float scaled = (float) (cir.getReturnValue() * cfg.player.miningSpeedMultiplier * fatigueFactor);

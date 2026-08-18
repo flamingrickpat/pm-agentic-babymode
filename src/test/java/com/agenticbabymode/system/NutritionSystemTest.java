@@ -4,6 +4,7 @@ import com.agenticbabymode.state.PlayerState;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NutritionSystemTest {
@@ -27,15 +28,25 @@ class NutritionSystemTest {
 	}
 
 	@Test
-	void advance24000TicksDecreasesNutritionByDecayPerDay() {
+	void advanceOneDayDecreasesNutritionByDecayPerDay() {
 		PlayerState ps = PlayerState.defaults();
 		ps.grain = 50.0;
 		ps.protein = 50.0;
 		ps.produce = 50.0;
-		NutritionSystem.decay(ps, 10.0, 24000);
-		assertEquals(40.0, ps.grain, 1e-6);
-		assertEquals(40.0, ps.protein, 1e-6);
-		assertEquals(40.0, ps.produce, 1e-6);
+		NutritionSystem.decay(ps, NutritionSystem.decayPerDay(7.0), 24000);
+		// 100/7 per day
+		assertEquals(50.0 - 100.0 / 7.0, ps.grain, 1e-6);
+		assertEquals(50.0 - 100.0 / 7.0, ps.protein, 1e-6);
+		assertEquals(50.0 - 100.0 / 7.0, ps.produce, 1e-6);
+	}
+
+	@Test
+	void reachesZeroAfterSevenDays() {
+		PlayerState ps = PlayerState.defaults();
+		NutritionSystem.decay(ps, NutritionSystem.decayPerDay(7.0), 24000 * 7);
+		assertEquals(0.0, ps.grain, 1e-6);
+		assertEquals(0.0, ps.protein, 1e-6);
+		assertEquals(0.0, ps.produce, 1e-6);
 	}
 
 	@Test
@@ -47,21 +58,41 @@ class NutritionSystemTest {
 	}
 
 	@Test
-	void nutritionCannotFallBelow0() {
-		PlayerState ps = PlayerState.defaults();
-		NutritionSystem.decay(ps, 10.0, 24000 * 10);
-		assertEquals(0.0, ps.grain, 1e-9);
-		assertEquals(0.0, ps.protein, 1e-9);
-		assertEquals(0.0, ps.produce, 1e-9);
-	}
-
-	@Test
 	void averageIsMeanOfCategories() {
 		PlayerState ps = PlayerState.defaults();
 		ps.grain = 10.0;
 		ps.protein = 20.0;
 		ps.produce = 30.0;
 		assertEquals(20.0, NutritionSystem.average(ps), 1e-9);
+	}
+
+	@Test
+	void categoryTierThresholds() {
+		assertEquals(0, NutritionSystem.categoryTier(45.0, 40.0, 15.0));
+		assertEquals(1, NutritionSystem.categoryTier(20.0, 40.0, 15.0));
+		assertEquals(1, NutritionSystem.categoryTier(39.99, 40.0, 15.0));
+		assertEquals(2, NutritionSystem.categoryTier(8.0, 40.0, 15.0));
+		assertEquals(2, NutritionSystem.categoryTier(0.0, 40.0, 15.0));
+	}
+
+	@Test
+	void starvingAndWellFedBoundaries() {
+		PlayerState ps = PlayerState.defaults();
+		ps.grain = 20.0;
+		ps.protein = 20.0;
+		ps.produce = 20.0; // avg 20
+		assertFalse(NutritionSystem.isStarving(ps, 10.0));
+		assertFalse(NutritionSystem.isWellFed(ps, 75.0));
+
+		ps.grain = 5.0;
+		ps.protein = 5.0;
+		ps.produce = 5.0; // avg 5
+		assertTrue(NutritionSystem.isStarving(ps, 10.0));
+
+		ps.grain = 90.0;
+		ps.protein = 90.0;
+		ps.produce = 90.0; // avg 90
+		assertTrue(NutritionSystem.isWellFed(ps, 75.0));
 	}
 
 	@Test

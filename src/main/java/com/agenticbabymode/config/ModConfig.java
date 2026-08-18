@@ -15,6 +15,12 @@ public class ModConfig {
 
 	public static class EnvironmentConfig {
 		public Double drowningTimeMultiplier = 10.0;
+		/** Vanilla food bar drains to empty in this many in-game days while standing still. */
+		public Double hungerPassiveDaysToEmpty = 7.0;
+		/** Scales all vanilla action exhaustion (sprinting/jumping/mining). 1.0 = vanilla. */
+		public Double hungerActivityExhaustionMultiplier = 1.0;
+		/** Direct food-bar drain per second while starving (on top of the Hunger effect). */
+		public Double starvingFoodDrainPerSecond = 0.02;
 	}
 
 	public static class MobsConfig {
@@ -24,36 +30,37 @@ public class ModConfig {
 		public Double damageTakenMultiplier = 2.0;
 	}
 
-	public static class FatigueConfig {
+	/**
+	 * Sleepiness: builds up purely over in-game time, reaches 100% after
+	 * fullAfterDays, and is only reset by right-clicking a bed.
+	 */
+	public static class SleepinessConfig {
 		public Boolean enabled = true;
-		/** Fatigue gained per second of sprinting. */
-		public Double sprintCostPerSecond = 1.5;
-		/** Fatigue gained per block broken. */
-		public Double mineCostPerBlock = 0.75;
-		/** Fatigue gained per point of damage taken. */
-		public Double damageCostPerPoint = 0.25;
-		/** Fatigue recovered per second while idle (not sprinting). */
-		public Double idleRecoveryPerSecond = 1.0;
-		/** Fatigue recovered per second while sleeping. */
-		public Double sleepRecoveryPerSecond = 3.0;
-		/** Max % movement speed penalty at 100 fatigue. */
-		public Double movementPenaltyPercent = 50.0;
+		/** In-game days (24000 ticks) of continuous play to reach 100%. */
+		public Double fullAfterDays = 2.5;
+		/** Max % movement/mining speed penalty at 100 sleepiness. */
+		public Double penaltyPercent = 50.0;
 	}
 
 	public static class NutritionConfig {
 		public Boolean enabled = true;
-		/** Points lost from each category per in-game day (24000 ticks). */
-		public Double decayPerDay = 10.0;
-		/** Average nutrition at/above which the well-fed regeneration effect applies. */
-		public Double wellFedRegenThreshold = 75.0;
-		/** Average nutrition at/below which the malnourished weakness effect applies. */
-		public Double malnourishedThreshold = 20.0;
+		/** Each category decays from 100 to 0 over this many in-game days. */
+		public Double daysToEmpty = 7.0;
+		/** Category below this value applies its debuff at level I. */
+		public Double deficitThresholdI = 40.0;
+		/** Category below this value applies its debuff at level II. */
+		public Double deficitThresholdII = 15.0;
+		/** Average below this value = starving: -4 max HP, hunger, no sprint. */
+		public Double starvingThreshold = 10.0;
+		/** Average at/above this value = well-fed: Regeneration + Strength + Haste. */
+		public Double wellFedThreshold = 75.0;
+		public Boolean preventSprintWhenStarving = true;
 	}
 
 	public PlayerConfig player = new PlayerConfig();
 	public EnvironmentConfig environment = new EnvironmentConfig();
 	public MobsConfig mobs = new MobsConfig();
-	public FatigueConfig fatigue = new FatigueConfig();
+	public SleepinessConfig sleepiness = new SleepinessConfig();
 	public NutritionConfig nutrition = new NutritionConfig();
 
 	public static ModConfig defaults() {
@@ -70,6 +77,9 @@ public class ModConfig {
 
 		if (environment == null) environment = new EnvironmentConfig();
 		if (environment.drowningTimeMultiplier == null) environment.drowningTimeMultiplier = 10.0;
+		if (environment.hungerPassiveDaysToEmpty == null) environment.hungerPassiveDaysToEmpty = 7.0;
+		if (environment.hungerActivityExhaustionMultiplier == null) environment.hungerActivityExhaustionMultiplier = 1.0;
+		if (environment.starvingFoodDrainPerSecond == null) environment.starvingFoodDrainPerSecond = 0.02;
 
 		if (mobs == null) mobs = new MobsConfig();
 		if (mobs.movementSpeedMultiplier == null) mobs.movementSpeedMultiplier = 0.35;
@@ -77,19 +87,18 @@ public class ModConfig {
 		if (mobs.damageMultiplier == null) mobs.damageMultiplier = 0.35;
 		if (mobs.damageTakenMultiplier == null) mobs.damageTakenMultiplier = 2.0;
 
-		if (fatigue == null) fatigue = new FatigueConfig();
-		if (fatigue.enabled == null) fatigue.enabled = true;
-		if (fatigue.sprintCostPerSecond == null) fatigue.sprintCostPerSecond = 1.5;
-		if (fatigue.mineCostPerBlock == null) fatigue.mineCostPerBlock = 0.75;
-		if (fatigue.damageCostPerPoint == null) fatigue.damageCostPerPoint = 0.25;
-		if (fatigue.idleRecoveryPerSecond == null) fatigue.idleRecoveryPerSecond = 1.0;
-		if (fatigue.sleepRecoveryPerSecond == null) fatigue.sleepRecoveryPerSecond = 3.0;
-		if (fatigue.movementPenaltyPercent == null) fatigue.movementPenaltyPercent = 50.0;
+		if (sleepiness == null) sleepiness = new SleepinessConfig();
+		if (sleepiness.enabled == null) sleepiness.enabled = true;
+		if (sleepiness.fullAfterDays == null) sleepiness.fullAfterDays = 2.5;
+		if (sleepiness.penaltyPercent == null) sleepiness.penaltyPercent = 50.0;
 
 		if (nutrition == null) nutrition = new NutritionConfig();
 		if (nutrition.enabled == null) nutrition.enabled = true;
-		if (nutrition.decayPerDay == null) nutrition.decayPerDay = 10.0;
-		if (nutrition.wellFedRegenThreshold == null) nutrition.wellFedRegenThreshold = 75.0;
-		if (nutrition.malnourishedThreshold == null) nutrition.malnourishedThreshold = 20.0;
+		if (nutrition.daysToEmpty == null) nutrition.daysToEmpty = 7.0;
+		if (nutrition.deficitThresholdI == null) nutrition.deficitThresholdI = 40.0;
+		if (nutrition.deficitThresholdII == null) nutrition.deficitThresholdII = 15.0;
+		if (nutrition.starvingThreshold == null) nutrition.starvingThreshold = 10.0;
+		if (nutrition.wellFedThreshold == null) nutrition.wellFedThreshold = 75.0;
+		if (nutrition.preventSprintWhenStarving == null) nutrition.preventSprintWhenStarving = true;
 	}
 }
