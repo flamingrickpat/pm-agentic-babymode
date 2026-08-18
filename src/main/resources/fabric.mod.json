@@ -1,0 +1,32 @@
+{
+	"schemaVersion": 1,
+	"id": "agentic_babymode",
+	"version": "${version}",
+	"name": "Agentic Babymode",
+	"description": "Server-side helper mod for agentic/baby-mode gameplay: combat, mobility, nutrition and fatigue tuning.",
+	"authors": [
+		"agentic-babymode"
+	],
+	"contact": {
+		"sources": "https://github.com/your/agentic-babymode"
+	},
+	"license": "MIT",
+	"icon": "assets/agentic-babymode/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.agenticbabymode.AgenticBabymodeMod"
+		]
+	},
+	"mixins": [
+		{
+			"config": "agentic-babymode.mixins.json",
+			"environment": "*"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"fabric": "*",
+		"minecraft": "1.19.4"
+	}
+}
