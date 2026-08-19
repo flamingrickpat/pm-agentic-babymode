@@ -18,7 +18,7 @@ public class ModConfig {
 	public static class EnvironmentConfig {
 		public Double drowningTimeMultiplier = 10.0;
 		/** Vanilla food bar drains to empty in this many in-game days while standing still. */
-		public Double hungerPassiveDaysToEmpty = 7.0;
+		public Double hungerPassiveDaysToEmpty = 30.0;
 		/** Scales all vanilla action exhaustion (sprinting/jumping/mining). 1.0 = vanilla. */
 		public Double hungerActivityExhaustionMultiplier = 1.0;
 		/** Direct food-bar drain per second while starving (on top of the Hunger effect). */
@@ -26,10 +26,16 @@ public class ModConfig {
 	}
 
 	public static class MobsConfig {
-		public Double movementSpeedMultiplier = 0.35;
+		/** 1/15 of vanilla + the player speed, so mobs are nearly stationary. */
+		public Double movementSpeedMultiplier = 1.0 / 15.0;
 		public Double attackCooldownMultiplier = 3.0;
-		public Double damageMultiplier = 0.35;
+		/** 1/15 of vanilla mob melee damage dealt to players. */
+		public Double damageMultiplier = 1.0 / 15.0;
 		public Double damageTakenMultiplier = 2.0;
+		/** Completely remove these hostile mobs from the world (spawn + chunk load). */
+		public Boolean disablePhantoms = true;
+		public Boolean disableCreepers = true;
+		public Boolean disablePillagers = true;
 	}
 
 	/**
@@ -47,7 +53,7 @@ public class ModConfig {
 	public static class NutritionConfig {
 		public Boolean enabled = true;
 		/** Each category decays from 100 to 0 over this many in-game days. */
-		public Double daysToEmpty = 7.0;
+		public Double daysToEmpty = 30.0;
 		/** Category below this value applies its debuff at level I. */
 		public Double deficitThresholdI = 40.0;
 		/** Category below this value applies its debuff at level II. */
@@ -59,11 +65,22 @@ public class ModConfig {
 		public Boolean preventSprintWhenStarving = true;
 	}
 
+	/**
+	 * Chat notification output. When notificationsEnabled is false, babymode
+	 * suppresses the automatic status-effect update spam (debuffs applied/removed,
+	 * starving / well-fed transitions, bed confirmations). Reply messages from
+	 * /babymode commands are always shown.
+	 */
+	public static class ChatConfig {
+		public Boolean notificationsEnabled = true;
+	}
+
 	public PlayerConfig player = new PlayerConfig();
 	public EnvironmentConfig environment = new EnvironmentConfig();
 	public MobsConfig mobs = new MobsConfig();
 	public SleepinessConfig sleepiness = new SleepinessConfig();
 	public NutritionConfig nutrition = new NutritionConfig();
+	public ChatConfig chat = new ChatConfig();
 
 	public static ModConfig defaults() {
 		return new ModConfig();
@@ -80,15 +97,18 @@ public class ModConfig {
 
 		if (environment == null) environment = new EnvironmentConfig();
 		if (environment.drowningTimeMultiplier == null) environment.drowningTimeMultiplier = 10.0;
-		if (environment.hungerPassiveDaysToEmpty == null) environment.hungerPassiveDaysToEmpty = 7.0;
+		if (environment.hungerPassiveDaysToEmpty == null) environment.hungerPassiveDaysToEmpty = 30.0;
 		if (environment.hungerActivityExhaustionMultiplier == null) environment.hungerActivityExhaustionMultiplier = 1.0;
 		if (environment.starvingFoodDrainPerSecond == null) environment.starvingFoodDrainPerSecond = 0.02;
 
 		if (mobs == null) mobs = new MobsConfig();
-		if (mobs.movementSpeedMultiplier == null) mobs.movementSpeedMultiplier = 0.35;
+		if (mobs.movementSpeedMultiplier == null) mobs.movementSpeedMultiplier = 1.0 / 15.0;
 		if (mobs.attackCooldownMultiplier == null) mobs.attackCooldownMultiplier = 3.0;
-		if (mobs.damageMultiplier == null) mobs.damageMultiplier = 0.35;
+		if (mobs.damageMultiplier == null) mobs.damageMultiplier = 1.0 / 15.0;
 		if (mobs.damageTakenMultiplier == null) mobs.damageTakenMultiplier = 2.0;
+		if (mobs.disablePhantoms == null) mobs.disablePhantoms = true;
+		if (mobs.disableCreepers == null) mobs.disableCreepers = true;
+		if (mobs.disablePillagers == null) mobs.disablePillagers = true;
 
 		if (sleepiness == null) sleepiness = new SleepinessConfig();
 		if (sleepiness.enabled == null) sleepiness.enabled = true;
@@ -97,11 +117,14 @@ public class ModConfig {
 
 		if (nutrition == null) nutrition = new NutritionConfig();
 		if (nutrition.enabled == null) nutrition.enabled = true;
-		if (nutrition.daysToEmpty == null) nutrition.daysToEmpty = 7.0;
+		if (nutrition.daysToEmpty == null) nutrition.daysToEmpty = 30.0;
 		if (nutrition.deficitThresholdI == null) nutrition.deficitThresholdI = 40.0;
 		if (nutrition.deficitThresholdII == null) nutrition.deficitThresholdII = 15.0;
 		if (nutrition.starvingThreshold == null) nutrition.starvingThreshold = 10.0;
 		if (nutrition.wellFedThreshold == null) nutrition.wellFedThreshold = 75.0;
 		if (nutrition.preventSprintWhenStarving == null) nutrition.preventSprintWhenStarving = true;
+
+		if (chat == null) chat = new ChatConfig();
+		if (chat.notificationsEnabled == null) chat.notificationsEnabled = true;
 	}
 }

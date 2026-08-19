@@ -21,21 +21,25 @@ class ModConfigTest {
 		assertFalse(cfg.player.pvp);
 		assertEquals(6.0, cfg.player.pickupRange, 1e-9);
 		assertEquals(10.0, cfg.environment.drowningTimeMultiplier, 1e-9);
-		assertEquals(7.0, cfg.environment.hungerPassiveDaysToEmpty, 1e-9);
+		assertEquals(30.0, cfg.environment.hungerPassiveDaysToEmpty, 1e-9);
 		assertEquals(1.0, cfg.environment.hungerActivityExhaustionMultiplier, 1e-9);
-		assertEquals(0.35, cfg.mobs.movementSpeedMultiplier, 1e-9);
+		assertEquals(1.0 / 15.0, cfg.mobs.movementSpeedMultiplier, 1e-9);
 		assertEquals(3.0, cfg.mobs.attackCooldownMultiplier, 1e-9);
-		assertEquals(0.35, cfg.mobs.damageMultiplier, 1e-9);
+		assertEquals(1.0 / 15.0, cfg.mobs.damageMultiplier, 1e-9);
 		assertEquals(2.0, cfg.mobs.damageTakenMultiplier, 1e-9);
+		assertTrue(cfg.mobs.disablePhantoms);
+		assertTrue(cfg.mobs.disableCreepers);
+		assertTrue(cfg.mobs.disablePillagers);
 		assertTrue(cfg.sleepiness.enabled);
 		assertEquals(2.5, cfg.sleepiness.fullAfterDays, 1e-9);
 		assertEquals(50.0, cfg.sleepiness.penaltyPercent, 1e-9);
 		assertTrue(cfg.nutrition.enabled);
-		assertEquals(7.0, cfg.nutrition.daysToEmpty, 1e-9);
+		assertEquals(30.0, cfg.nutrition.daysToEmpty, 1e-9);
 		assertEquals(40.0, cfg.nutrition.deficitThresholdI, 1e-9);
 		assertEquals(15.0, cfg.nutrition.deficitThresholdII, 1e-9);
 		assertEquals(10.0, cfg.nutrition.starvingThreshold, 1e-9);
 		assertEquals(75.0, cfg.nutrition.wellFedThreshold, 1e-9);
+		assertTrue(cfg.chat.notificationsEnabled);
 	}
 
 	@Test
@@ -44,8 +48,9 @@ class ModConfigTest {
 		cfg.applyDefaults();
 		assertEquals(1.5, cfg.player.movementSpeedMultiplier, 1e-9);
 		assertEquals(10.0, cfg.environment.drowningTimeMultiplier, 1e-9);
-		assertEquals(7.0, cfg.nutrition.daysToEmpty, 1e-9);
+		assertEquals(30.0, cfg.nutrition.daysToEmpty, 1e-9);
 		assertTrue(cfg.sleepiness.enabled);
+		assertTrue(cfg.chat.notificationsEnabled);
 	}
 
 	@Test
@@ -63,5 +68,20 @@ class ModConfigTest {
 		assertEquals(5.0, cfg.player.miningSpeedMultiplier, 1e-9);
 		assertEquals(40.0, cfg.nutrition.deficitThresholdI, 1e-9);
 		assertEquals(2.5, cfg.sleepiness.fullAfterDays, 1e-9);
+	}
+
+	@Test
+	void notificationsAndDisabledMobsAreConfigurable() {
+		ModConfig cfg = GSON.fromJson(
+				"{\"chat\":{\"notificationsEnabled\":false},"
+						+ "\"mobs\":{\"disablePhantoms\":false,\"disablePillagers\":false}}",
+				ModConfig.class);
+		cfg.applyDefaults();
+		assertFalse(cfg.chat.notificationsEnabled);
+		assertFalse(cfg.mobs.disablePhantoms);
+		assertFalse(cfg.mobs.disablePillagers);
+		// untouched fields default from defaults
+		assertTrue(cfg.mobs.disableCreepers);
+		assertEquals(1.0 / 15.0, cfg.mobs.damageMultiplier, 1e-9);
 	}
 }

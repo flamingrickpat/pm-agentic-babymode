@@ -23,7 +23,10 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.PhantomEntity;
+import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -109,6 +112,8 @@ public final class BabymodeServer {
 		});
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			// Dying is a soft-reset: back to full nutrition and zero sleepiness.
+			resetOnRespawn(newPlayer);
 			applyMovementSpeed(newPlayer);
 		});
 
@@ -125,7 +130,7 @@ public final class BabymodeServer {
 				if (ps.sleepiness > 0.0) {
 					SleepinessSystem.reset(ps);
 					state.markDirty();
-					spe.sendMessage(Text.literal(MSG_PREFIX + "You press against the bed... sleepiness reset to 0."), false);
+					send(spe, "You press against the bed... sleepiness reset to 0.");
 				}
 			}
 			return ActionResult.PASS;
@@ -134,13 +139,23 @@ public final class BabymodeServer {
 		// PvP toggle
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
 			Entity attacker = source.getAttacker();
-			return ConfigManager.get().player.pvp
-					|| !(entity instanceof PlayerEntity && attacker instanceof PlayerEntity);
+			ModConfig cfg = ConfigManager.get();
+			if (!cfg.player.pvp && entity instanceof PlayerEntity && attacker instanceof PlayerEntity) {
+				return false;
+			}
+			// Failsafe: disabled mobs can never harm the player even if one slips through.
+			if (entity instanceof PlayerEntity && isDisabledMob(attacker)) {
+				return false;
+			}
+			return true;
 		});
 
-		// Mob movement speed scaling on spawn/load
+		// Mob movement speed scaling on spawn/load + complete removal of disabled mobs.
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			ModConfig cfg = ConfigManager.get();
+			if (!world.isClient && disableMobOnLoad(entity, cfg)) {
+				return;
+			}
 			double m = cfg.mobs.movementSpeedMultiplier;
 			if (m == 1.0 || world.isClient || !(entity instanceof MobEntity mob)) {
 				return;
@@ -150,6 +165,29 @@ public final class BabymodeServer {
 				inst.setBaseValue(inst.getBaseValue() * m);
 			}
 		});
+	}
+
+	/** True when the entity is a mob the config says to fully remove (discard). */
+	private static boolean disableMobOnLoad(Entity entity, ModConfig cfg) {
+		ModConfig.MobsConfig m = cfg.mobs;
+		boolean disabled = (m.disablePhantoms && entity instanceof PhantomEntity)
+				|| (m.disableCreepers && entity instanceof CreeperEntity)
+				|| (m.disablePillagers && entity instanceof PillagerEntity);
+		if (disabled) {
+			entity.discard();
+		}
+		return disabled;
+	}
+
+	/** True when the entity is one of the config-disabled hostile mobs. */
+	private static boolean isDisabledMob(Entity entity) {
+		if (entity == null) {
+			return false;
+		}
+		ModConfig.MobsConfig m = ConfigManager.get().mobs;
+		return (m.disablePhantoms && entity instanceof PhantomEntity)
+				|| (m.disableCreepers && entity instanceof CreeperEntity)
+				|| (m.disablePillagers && entity instanceof PillagerEntity);
 	}
 
 	private void onServerStarted(MinecraftServer server) {
@@ -411,6 +449,22 @@ public final class BabymodeServer {
 		}
 	}
 
+	/** Soft-death reset: nutrition back to 100 and sleepiness to 0 (its best value). */
+	private void resetOnRespawn(ServerPlayerEntity player) {
+		if (state == null) {
+			ensureState();
+		}
+		if (state == null) {
+			return;
+		}
+		PlayerState ps = state.getOrCreate(player.getUuid());
+		ps.grain = 100.0;
+		ps.protein = 100.0;
+		ps.produce = 100.0;
+		ps.sleepiness = 0.0;
+		state.markDirty();
+	}
+
 	private void applyMovementSpeed(ServerPlayerEntity player) {
 		ModConfig cfg = ConfigManager.get();
 		PlayerState ps = state != null ? state.get(player.getUuid()) : null;
@@ -431,6 +485,9 @@ public final class BabymodeServer {
 	}
 
 	private static void send(ServerPlayerEntity player, String message) {
+		if (ConfigManager.get().chat.notificationsEnabled == Boolean.FALSE) {
+			return;
+		}
 		player.sendMessage(Text.literal(MSG_PREFIX + message), false);
 	}
 
