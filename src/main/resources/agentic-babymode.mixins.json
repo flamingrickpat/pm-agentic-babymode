@@ -10,7 +10,8 @@
     "PlayerEntityAttackMixin",
     "PlayerEntityMiningSpeedMixin",
     "PlayerEntityEatFoodMixin",
-    "MobEntityAttackCooldownMixin"
+    "MobEntityAttackCooldownMixin",
+    "ServerPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

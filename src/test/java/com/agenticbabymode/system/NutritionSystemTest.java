@@ -11,7 +11,7 @@ class NutritionSystemTest {
 
 	@Test
 	void eatBreadIncreasesOnlyGrain() {
-		PlayerState ps = PlayerState.defaults();
+		PlayerState ps = PlayerState.empty();
 		NutritionSystem.add(ps, new NutritionGain(6.0, 0.0, 0.0));
 		assertEquals(6.0, ps.grain, 1e-9);
 		assertEquals(0.0, ps.protein, 1e-9);
@@ -20,11 +20,20 @@ class NutritionSystemTest {
 
 	@Test
 	void eatSteakIncreasesProtein() {
-		PlayerState ps = PlayerState.defaults();
+		PlayerState ps = PlayerState.empty();
 		NutritionSystem.add(ps, new NutritionGain(1.0, 6.0, 0.0));
 		assertEquals(1.0, ps.grain, 1e-9);
 		assertEquals(6.0, ps.protein, 1e-9);
 		assertEquals(0.0, ps.produce, 1e-9);
+	}
+
+	@Test
+	void freshPlayerStartsWithZeroSleepinessAndFullNutrition() {
+		PlayerState ps = PlayerState.defaults();
+		assertEquals(0.0, ps.sleepiness, 1e-9);
+		assertEquals(100.0, ps.grain, 1e-9);
+		assertEquals(100.0, ps.protein, 1e-9);
+		assertEquals(100.0, ps.produce, 1e-9);
 	}
 
 	@Test

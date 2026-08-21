@@ -27,11 +27,16 @@ sleepiness and nutrition systems that force strategic food planning.
   - Natural regeneration forced off (`player.naturalRegeneration`)
   - Items within `player.pickupRange` blocks of a player get pulled into their
     inventory (default 6.0; vanilla pickup rules still apply — no new mixin)
+  - **"Kicked for spamming" disabled** — vanilla kicks players who send chat messages or
+    run commands faster than ~1/sec sustained; too aggressive for agents, so the spam
+    check is cancelled entirely (server-side mixin)
 - **Sleepiness** (per player, persisted in the world)
+  - New players start at 0 sleepiness
   - Builds up purely over in-game time: 0 → 100 over `sleepiness.fullAfterDays` (default 30 days)
   - **The only reset is right-clicking a bed** — works even during the day
   - At 50+: Slowness / Mining Fatigue; at 100: can't sprint; movement & mining slow down
 - **Nutrition** (per player, persisted in the world: grain / protein / produce, 0–100 each)
+  - New players start at 100/100/100 nutrition
   - Eaten food from the catalog raises categories (bread→grain, meat→protein, fruit→produce)
   - Each category decays to 0 over `nutrition.daysToEmpty` (default 90 days)
   - **Dying resets nutrition to 100/100/100 and sleepiness to 0** (soft reset)

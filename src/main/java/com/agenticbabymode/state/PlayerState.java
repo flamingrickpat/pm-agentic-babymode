@@ -10,7 +10,18 @@ public class PlayerState {
 	public double protein;
 	public double produce;
 
+	/** Fresh player: 0 sleepiness, full nutrition (grain/protein/produce = 100). */
 	public static PlayerState defaults() {
+		PlayerState ps = new PlayerState();
+		ps.sleepiness = 0.0;
+		ps.grain = 100.0;
+		ps.protein = 100.0;
+		ps.produce = 100.0;
+		return ps;
+	}
+
+	/** Zeroed state (0 sleepiness, 0 nutrition) — useful for tests. */
+	public static PlayerState empty() {
 		return new PlayerState();
 	}
 }

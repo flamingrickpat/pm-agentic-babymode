@@ -57,9 +57,9 @@ public class BabymodeState extends PersistentState {
 				UUID uuid = tag.getUuid("uuid");
 				PlayerState ps = PlayerState.defaults();
 				ps.sleepiness = tag.contains("sleepiness") ? tag.getDouble("sleepiness") : tag.getDouble("fatigue");
-				ps.grain = tag.getDouble("grain");
-				ps.protein = tag.getDouble("protein");
-				ps.produce = tag.getDouble("produce");
+				ps.grain = tag.contains("grain") ? tag.getDouble("grain") : ps.grain;
+				ps.protein = tag.contains("protein") ? tag.getDouble("protein") : ps.protein;
+				ps.produce = tag.contains("produce") ? tag.getDouble("produce") : ps.produce;
 				state.players.put(uuid, ps);
 			}
 		}
