@@ -28,19 +28,21 @@ sleepiness and nutrition systems that force strategic food planning.
   - Items within `player.pickupRange` blocks of a player get pulled into their
     inventory (default 6.0; vanilla pickup rules still apply — no new mixin)
 - **Sleepiness** (per player, persisted in the world)
-  - Builds up purely over in-game time: 0 → 100 over `sleepiness.fullAfterDays` (default 2.5 days)
+  - Builds up purely over in-game time: 0 → 100 over `sleepiness.fullAfterDays` (default 30 days)
   - **The only reset is right-clicking a bed** — works even during the day
   - At 50+: Slowness / Mining Fatigue; at 100: can't sprint; movement & mining slow down
 - **Nutrition** (per player, persisted in the world: grain / protein / produce, 0–100 each)
   - Eaten food from the catalog raises categories (bread→grain, meat→protein, fruit→produce)
-  - Each category decays to 0 over `nutrition.daysToEmpty` (default 30 days)
+  - Each category decays to 0 over `nutrition.daysToEmpty` (default 90 days)
   - **Dying resets nutrition to 100/100/100 and sleepiness to 0** (soft reset)
   - **Grain < 40 / < 15 → Slowness I / II**
   - **Protein < 40 / < 15 → Weakness I / II**
   - **Produce < 40 / < 15 → Mining Fatigue I / II**
   - **avg < 10 → STARVING: −4 max HP, Hunger drain, no sprint** — if you don't eat, the
     food bar hits 0 and vanilla starvation damage kills you (a real deadline)
-  - **avg ≥ 75 → well-fed: Regeneration + Strength + Haste**
+  - **avg ≥ 75 → well-fed buffs (Regeneration + Strength + Haste)** — only when
+    `nutrition.enableWellFedBuffs` is `true` (default `false`, off, so agents aren't
+    confused by buffs)
 - **Hunger pacing** (vanilla food bar)
   - Drains to empty in `environment.hungerPassiveDaysToEmpty` (default 30 days) while idle
   - Action exhaustion scaled by `environment.hungerActivityExhaustionMultiplier` (default 1.0 = vanilla)
@@ -102,12 +104,13 @@ Every value is optional; missing values fall back to defaults.
   },
   "sleepiness": {
     "enabled": true,
-    "fullAfterDays": 2.5,
+    "fullAfterDays": 30.0,
     "penaltyPercent": 50.0
   },
   "nutrition": {
     "enabled": true,
-    "daysToEmpty": 30.0,
+    "daysToEmpty": 90.0,
+    "enableWellFedBuffs": false,
     "deficitThresholdI": 40.0,
     "deficitThresholdII": 15.0,
     "starvingThreshold": 10.0,

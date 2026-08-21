@@ -68,8 +68,11 @@ public final class BabymodeCommand {
 				c.nutrition.deficitThresholdI, c.nutrition.deficitThresholdII,
 				c.nutrition.deficitThresholdI, c.nutrition.deficitThresholdII,
 				c.nutrition.deficitThresholdI, c.nutrition.deficitThresholdII));
-		sb.append(String.format("  avg <%s → STARVING (-4 max HP, hunger, no sprint) | avg ≥%s → Regen+Strength+Haste\n",
-				c.nutrition.starvingThreshold, c.nutrition.wellFedThreshold));
+		sb.append(String.format("  avg <%s → STARVING (-4 max HP, hunger, no sprint)%s\n",
+				c.nutrition.starvingThreshold,
+				c.nutrition.enableWellFedBuffs
+						? String.format(" | avg ≥%s → Regen+Strength+Haste", c.nutrition.wellFedThreshold)
+						: ""));
 		sb.append(String.format("Food bar: drains to 0 in %.1f days idle; actions drain %.2fx.\n",
 				c.environment.hungerPassiveDaysToEmpty, c.environment.hungerActivityExhaustionMultiplier));
 		sb.append("Commands: /babymode version | help | status | status json | reload | reset <0-100>");

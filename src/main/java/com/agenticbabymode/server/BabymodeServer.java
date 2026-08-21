@@ -297,7 +297,9 @@ public final class BabymodeServer {
 		double avg = NutritionSystem.average(ps);
 		boolean starving = cfg.nutrition.enabled
 				&& NutritionSystem.isStarving(ps, cfg.nutrition.starvingThreshold);
-		boolean wellFed = cfg.nutrition.enabled
+		// Well-fed buff tier is only tracked/applied while the master flag is on.
+		boolean wellFedEnabled = cfg.nutrition.enabled && cfg.nutrition.enableWellFedBuffs;
+		boolean wellFed = wellFedEnabled
 				&& NutritionSystem.isWellFed(ps, cfg.nutrition.wellFedThreshold);
 
 		// Sleepiness-driven effects
@@ -346,9 +348,9 @@ public final class BabymodeServer {
 						String.format("avg nutrition %.0f/100 (<%s)", avg, cfg.nutrition.starvingThreshold));
 			}
 
-			// Well-fed tier
-			if (wellFed) {
-				String reason = String.format("avg nutrition %.0f/100 (≥%s)", avg, cfg.nutrition.wellFedThreshold);
+			// Well-fed tier: only applied when the buffs are enabled.
+			if (wellFedEnabled && wellFed) {
+				String reason = String.format("avg nutrition=%.0f/100 (≥%s)", avg, cfg.nutrition.wellFedThreshold);
 				putEffect(desired, StatusEffects.REGENERATION, 0, reason);
 				putEffect(desired, StatusEffects.STRENGTH, 0, reason);
 				putEffect(desired, StatusEffects.HASTE, 0, reason);
@@ -398,11 +400,11 @@ public final class BabymodeServer {
 			handleStarvingHp(player, starving, cfg);
 		}
 
-		// Well-fed transitions
-		if (wellFed && !old.wellFed) {
+		// Well-fed transitions (only reported when the buff tier is enabled).
+		if (wellFedEnabled && wellFed && !old.wellFed) {
 			send(player, "✓ Well-fed! Avg nutrition " + Math.round(avg) + "/100 ≥ "
 					+ cfg.nutrition.wellFedThreshold + ": +Regeneration, +Strength, +Haste");
-		} else if (!wellFed && old.wellFed) {
+		} else if (wellFedEnabled && !wellFed && old.wellFed) {
 			send(player, "Well-fed ended — buffs removed (avg nutrition " + Math.round(avg) + "/100).");
 		}
 

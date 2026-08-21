@@ -45,7 +45,7 @@ public class ModConfig {
 	public static class SleepinessConfig {
 		public Boolean enabled = true;
 		/** In-game days (24000 ticks) of continuous play to reach 100%. */
-		public Double fullAfterDays = 2.5;
+		public Double fullAfterDays = 30.0;
 		/** Max % movement/mining speed penalty at 100 sleepiness. */
 		public Double penaltyPercent = 50.0;
 	}
@@ -53,7 +53,9 @@ public class ModConfig {
 	public static class NutritionConfig {
 		public Boolean enabled = true;
 		/** Each category decays from 100 to 0 over this many in-game days. */
-		public Double daysToEmpty = 30.0;
+		public Double daysToEmpty = 90.0;
+		/** Master switch for the "well-fed" buff tier (Regen + Strength + Haste). Off by default so agents aren't confused by buffs. */
+		public Boolean enableWellFedBuffs = false;
 		/** Category below this value applies its debuff at level I. */
 		public Double deficitThresholdI = 40.0;
 		/** Category below this value applies its debuff at level II. */
@@ -112,12 +114,13 @@ public class ModConfig {
 
 		if (sleepiness == null) sleepiness = new SleepinessConfig();
 		if (sleepiness.enabled == null) sleepiness.enabled = true;
-		if (sleepiness.fullAfterDays == null) sleepiness.fullAfterDays = 2.5;
+		if (sleepiness.fullAfterDays == null) sleepiness.fullAfterDays = 30.0;
 		if (sleepiness.penaltyPercent == null) sleepiness.penaltyPercent = 50.0;
 
 		if (nutrition == null) nutrition = new NutritionConfig();
 		if (nutrition.enabled == null) nutrition.enabled = true;
-		if (nutrition.daysToEmpty == null) nutrition.daysToEmpty = 30.0;
+		if (nutrition.daysToEmpty == null) nutrition.daysToEmpty = 90.0;
+		if (nutrition.enableWellFedBuffs == null) nutrition.enableWellFedBuffs = false;
 		if (nutrition.deficitThresholdI == null) nutrition.deficitThresholdI = 40.0;
 		if (nutrition.deficitThresholdII == null) nutrition.deficitThresholdII = 15.0;
 		if (nutrition.starvingThreshold == null) nutrition.starvingThreshold = 10.0;
