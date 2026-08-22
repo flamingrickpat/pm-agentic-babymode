@@ -17,6 +17,8 @@ public class ModConfig {
 
 	public static class EnvironmentConfig {
 		public Double drowningTimeMultiplier = 10.0;
+		/** Dropped items are marked never-despawn the instant they load/spawn, so loot never expires. */
+		public Boolean itemsNeverDespawn = true;
 		/** Vanilla food bar drains to empty in this many in-game days while standing still. */
 		public Double hungerPassiveDaysToEmpty = 30.0;
 		/** Scales all vanilla action exhaustion (sprinting/jumping/mining). 1.0 = vanilla. */
@@ -36,6 +38,8 @@ public class ModConfig {
 		public Boolean disablePhantoms = true;
 		public Boolean disableCreepers = true;
 		public Boolean disablePillagers = true;
+		/** Completely remove skeletons from the world (spawn + chunk load). */
+		public Boolean disableSkeletons = true;
 	}
 
 	/**
@@ -99,6 +103,7 @@ public class ModConfig {
 
 		if (environment == null) environment = new EnvironmentConfig();
 		if (environment.drowningTimeMultiplier == null) environment.drowningTimeMultiplier = 10.0;
+		if (environment.itemsNeverDespawn == null) environment.itemsNeverDespawn = true;
 		if (environment.hungerPassiveDaysToEmpty == null) environment.hungerPassiveDaysToEmpty = 30.0;
 		if (environment.hungerActivityExhaustionMultiplier == null) environment.hungerActivityExhaustionMultiplier = 1.0;
 		if (environment.starvingFoodDrainPerSecond == null) environment.starvingFoodDrainPerSecond = 0.02;
@@ -111,6 +116,7 @@ public class ModConfig {
 		if (mobs.disablePhantoms == null) mobs.disablePhantoms = true;
 		if (mobs.disableCreepers == null) mobs.disableCreepers = true;
 		if (mobs.disablePillagers == null) mobs.disablePillagers = true;
+		if (mobs.disableSkeletons == null) mobs.disableSkeletons = true;
 
 		if (sleepiness == null) sleepiness = new SleepinessConfig();
 		if (sleepiness.enabled == null) sleepiness.enabled = true;

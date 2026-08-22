@@ -27,6 +27,7 @@ import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PhantomEntity;
 import net.minecraft.entity.mob.PillagerEntity;
+import net.minecraft.entity.mob.SkeletonEntity;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -150,11 +151,16 @@ public final class BabymodeServer {
 			return true;
 		});
 
-		// Mob movement speed scaling on spawn/load + complete removal of disabled mobs.
+		// Mob movement speed scaling on spawn/load, complete removal of disabled mobs,
+		// and loot that never despawns.
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			ModConfig cfg = ConfigManager.get();
 			if (!world.isClient && disableMobOnLoad(entity, cfg)) {
 				return;
+			}
+			// Agent comfort: dropped items never expire so loot is never lost.
+			if (!world.isClient && cfg.environment.itemsNeverDespawn && entity instanceof ItemEntity item) {
+				item.setNeverDespawn();
 			}
 			double m = cfg.mobs.movementSpeedMultiplier;
 			if (m == 1.0 || world.isClient || !(entity instanceof MobEntity mob)) {
@@ -172,7 +178,8 @@ public final class BabymodeServer {
 		ModConfig.MobsConfig m = cfg.mobs;
 		boolean disabled = (m.disablePhantoms && entity instanceof PhantomEntity)
 				|| (m.disableCreepers && entity instanceof CreeperEntity)
-				|| (m.disablePillagers && entity instanceof PillagerEntity);
+				|| (m.disablePillagers && entity instanceof PillagerEntity)
+				|| (m.disableSkeletons && entity instanceof SkeletonEntity);
 		if (disabled) {
 			entity.discard();
 		}
@@ -187,7 +194,8 @@ public final class BabymodeServer {
 		ModConfig.MobsConfig m = ConfigManager.get().mobs;
 		return (m.disablePhantoms && entity instanceof PhantomEntity)
 				|| (m.disableCreepers && entity instanceof CreeperEntity)
-				|| (m.disablePillagers && entity instanceof PillagerEntity);
+				|| (m.disablePillagers && entity instanceof PillagerEntity)
+				|| (m.disableSkeletons && entity instanceof SkeletonEntity);
 	}
 
 	private void onServerStarted(MinecraftServer server) {

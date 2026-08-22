@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class AgenticBabymodeMod implements ModInitializer {
 	public static final String MOD_ID = "agentic_babymode";
-	public static final String MOD_VERSION = "0.2.0";
+	public static final String MOD_VERSION = "0.3.0";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	@Override

@@ -30,11 +30,14 @@ class ModConfigTest {
 		assertTrue(cfg.mobs.disablePhantoms);
 		assertTrue(cfg.mobs.disableCreepers);
 		assertTrue(cfg.mobs.disablePillagers);
+		assertTrue(cfg.mobs.disableSkeletons);
+		assertTrue(cfg.environment.itemsNeverDespawn);
 		assertTrue(cfg.sleepiness.enabled);
 		assertEquals(30.0, cfg.sleepiness.fullAfterDays, 1e-9);
 		assertEquals(50.0, cfg.sleepiness.penaltyPercent, 1e-9);
 		assertTrue(cfg.nutrition.enabled);
 		assertEquals(90.0, cfg.nutrition.daysToEmpty, 1e-9);
+		assertTrue(cfg.environment.itemsNeverDespawn);
 		assertFalse(cfg.nutrition.enableWellFedBuffs);
 		assertEquals(40.0, cfg.nutrition.deficitThresholdI, 1e-9);
 		assertEquals(15.0, cfg.nutrition.deficitThresholdII, 1e-9);
@@ -84,6 +87,7 @@ class ModConfigTest {
 		assertFalse(cfg.mobs.disablePillagers);
 		// untouched fields default from defaults
 		assertTrue(cfg.mobs.disableCreepers);
+		assertTrue(cfg.mobs.disableSkeletons);
 		assertEquals(1.0 / 15.0, cfg.mobs.damageMultiplier, 1e-9);
 	}
 }
