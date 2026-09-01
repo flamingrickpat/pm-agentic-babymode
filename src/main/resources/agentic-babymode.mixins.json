@@ -5,13 +5,15 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "agentic-babymode-refmap.json",
   "mixins": [
+    "BlockEntityMixin",
     "LivingEntityAirMixin",
     "HungerManagerMixin",
     "PlayerEntityAttackMixin",
     "PlayerEntityMiningSpeedMixin",
     "PlayerEntityEatFoodMixin",
     "MobEntityAttackCooldownMixin",
-    "ServerPlayNetworkHandlerMixin"
+    "ServerPlayNetworkHandlerMixin",
+    "WorldChunkMixin"
   ],
   "injectors": {
     "defaultRequire": 1

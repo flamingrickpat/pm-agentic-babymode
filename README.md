@@ -68,12 +68,26 @@ sleepiness and nutrition systems that force strategic food planning.
 /babymode reset <0-100> # set all players' grain/protein/produce to N and sleepiness to 0 (op)
 /babymode status        # human-readable state
 /babymode status json   # one compact JSON line, easy for bots to parse
+/commit                 # establish the current world as the rollback baseline (op)
+/revert                 # restore that baseline without restarting the server (op)
 ```
+
+`/commit` starts an in-memory undo journal. It does not copy every loaded block. After
+that, the mod records each block's original state the first time it changes. `/revert`
+restores those blocks and any changed block-entity data, clears pending block and fluid
+updates around dirty chunks, and starts a fresh journal against the same baseline. This
+makes repeated `/revert` calls suitable for test setup, including tests that travel into
+chunks which were not loaded at commit time.
+
+The checkpoint is intentionally not durable. Restarting or crashing the server discards
+the journal, so keep a normal world backup for crash recovery. Entities, player state,
+inventories, time, weather, gamerules, advancements, and scoreboards are outside the
+checkpoint; test setup must reset those separately when it depends on them.
 
 `/babymode status json` output example:
 
 ```json
-{"version":"0.2.0","sleepiness":73.0,"fatigue":73.0,"nutrition":{"grain":89.0,"protein":41.0,"produce":67.0},"health":17.0,"maxHealth":20.0,"hunger":14,"air":300,"effects":[{"id":"minecraft:slowness","amplifier":1,"duration":190}]}
+{"version":"0.4.0","sleepiness":73.0,"fatigue":73.0,"nutrition":{"grain":89.0,"protein":41.0,"produce":67.0},"health":17.0,"maxHealth":20.0,"hunger":14,"air":300,"effects":[{"id":"minecraft:slowness","amplifier":1,"duration":190}]}
 ```
 
 The `fatigue` field is an alias for `sleepiness` (older integrations keep working).
@@ -131,7 +145,7 @@ Every value is optional; missing values fall back to defaults.
 ## Installation (LAN host)
 
 1. Install Fabric API (any 1.19.4 release, e.g. `0.87.2+1.19.4`) as a normal mod.
-2. Drop `agentic-babymode-0.2.0.jar` into the instance's `mods` folder.
+2. Drop `agentic-babymode-0.4.0.jar` into the instance's `mods` folder.
 3. Launch, open a world, **Open to LAN**.
 4. Join with Mineflayer or vanilla clients — they do **not** need the mod.
 
@@ -140,7 +154,7 @@ Every value is optional; missing values fall back to defaults.
 Requirements: JDK 17, Git, internet (Gradle fetches Loom/Yarn/Fabric automatically).
 
 ```
-./gradlew.bat build        # compile + test + produce build/libs/agentic-babymode-0.2.0.jar
+./gradlew.bat build        # compile + test + produce build/libs/agentic-babymode-0.4.0.jar
 ./gradlew.bat runServer    # headless smoke test (eula.txt in run/)
 ./gradlew.bat runClient    # full client (needs a display)
 ```
