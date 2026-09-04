@@ -8,6 +8,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
@@ -80,6 +81,7 @@ public final class WorldCheckpoint {
 			clearPendingUpdates(server, dirtyChunks);
 			restoreBlocks(server);
 			restoreBlockEntities(server);
+			wakeSleepingPlayers(server);
 			clearPendingUpdates(server, dirtyChunks);
 		} finally {
 			reverting = false;
@@ -139,6 +141,14 @@ public final class WorldCheckpoint {
 			chunks.add(new ChunkKey(key.world(), new ChunkPos(key.pos()).toLong()));
 		}
 		return chunks;
+	}
+
+	private void wakeSleepingPlayers(MinecraftServer server) {
+		for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+			if (player.isSleeping()) {
+				player.wakeUp(true, false);
+			}
+		}
 	}
 
 	private void clearPendingUpdates(MinecraftServer server, Set<ChunkKey> dirtyChunks) {
