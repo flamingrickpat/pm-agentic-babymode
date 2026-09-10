@@ -19,7 +19,6 @@ class ModConfigTest {
 		assertEquals(5.0, cfg.player.miningSpeedMultiplier, 1e-9);
 		assertFalse(cfg.player.naturalRegeneration);
 		assertFalse(cfg.player.pvp);
-		assertEquals(6.0, cfg.player.pickupRange, 1e-9);
 		assertEquals(10.0, cfg.environment.drowningTimeMultiplier, 1e-9);
 		assertEquals(30.0, cfg.environment.hungerPassiveDaysToEmpty, 1e-9);
 		assertEquals(1.0, cfg.environment.hungerActivityExhaustionMultiplier, 1e-9);

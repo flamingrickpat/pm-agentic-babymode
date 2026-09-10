@@ -52,9 +52,9 @@ public final class BabymodeCommand {
 		ModConfig c = ConfigManager.get();
 		StringBuilder sb = new StringBuilder();
 		sb.append("Agentic Babymode v").append(AgenticBabymodeMod.MOD_VERSION).append(" — current rules:\n");
-		sb.append(String.format("Player: move %.2fx | mine %.1fx | underwater air %.1fx | item pickup %.0f blocks | natural regen %s | PvP %s\n",
+		sb.append(String.format("Player: move %.2fx | mine %.1fx | underwater air %.1fx | mined loot to inventory, overflow to ground | natural regen %s | PvP %s\n",
 				c.player.movementSpeedMultiplier, c.player.miningSpeedMultiplier,
-				c.environment.drowningTimeMultiplier, c.player.pickupRange,
+				c.environment.drowningTimeMultiplier,
 				c.player.naturalRegeneration ? "on" : "off",
 				c.player.pvp ? "on" : "off"));
 		sb.append(String.format("Mobs: move %.2fx | deal %.2fx damage | attack cooldown %.1fx | take %.1fx from you\n",

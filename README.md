@@ -25,8 +25,9 @@ sleepiness and nutrition systems that force strategic food planning.
   - `player.movementSpeedMultiplier` (default 1.5×), `player.miningSpeedMultiplier` (default 5×)
   - `environment.drowningTimeMultiplier` (default 10× longer underwater)
   - Natural regeneration forced off (`player.naturalRegeneration`)
-  - Items within `player.pickupRange` blocks of a player get pulled into their
-    inventory (default 6.0; vanilla pickup rules still apply — no new mixin)
+  - Mined loot enters the miner's inventory directly. Only overflow drops at the block.
+    Normal loot, tool requirements, enchantments, and durability apply.
+    No pickup radius or pickup-range mod required.
   - **"Kicked for spamming" disabled** — vanilla kicks players who send chat messages or
     run commands faster than ~1/sec sustained; too aggressive for agents, so the spam
     check is cancelled entirely (server-side mixin)
@@ -103,8 +104,7 @@ Every value is optional; missing values fall back to defaults.
     "movementSpeedMultiplier": 1.5,
     "miningSpeedMultiplier": 5.0,
     "naturalRegeneration": false,
-    "pvp": false,
-    "pickupRange": 6.0
+    "pvp": false
   },
   "environment": {
     "drowningTimeMultiplier": 10.0,

@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "agentic-babymode-refmap.json",
   "mixins": [
+    "BlockAutoCollectMixin",
     "BlockEntityMixin",
     "LivingEntityAirMixin",
     "HungerManagerMixin",

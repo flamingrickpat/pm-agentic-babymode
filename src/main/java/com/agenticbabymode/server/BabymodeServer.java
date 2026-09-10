@@ -247,7 +247,6 @@ public final class BabymodeServer {
 
 		tickHunger(player, cfg);
 		applyMovementSpeed(player);
-		pickupNearbyItems(player, cfg);
 		applyAndReport(player, ps, cfg);
 
 		// Sprint gates: max sleepiness, or starving.
@@ -261,23 +260,6 @@ public final class BabymodeServer {
 		}
 
 		state.markDirty();
-	}
-
-	/** Agent comfort: pull items within player.pickupRange into the inventory (vanilla rules apply). */
-	private void pickupNearbyItems(ServerPlayerEntity player, ModConfig cfg) {
-		double range = cfg.player.pickupRange;
-		if (range <= 0.0) {
-			return;
-		}
-		List<ItemEntity> items = player.getWorld().getEntitiesByClass(ItemEntity.class,
-				player.getBoundingBox().expand(range),
-				item -> !item.cannotPickup());
-		double rangeSq = range * range;
-		for (ItemEntity item : items) {
-			if (item.squaredDistanceTo(player) < rangeSq) {
-				item.onPlayerCollision(player);
-			}
-		}
 	}
 
 	private void tickHunger(ServerPlayerEntity player, ModConfig cfg) {

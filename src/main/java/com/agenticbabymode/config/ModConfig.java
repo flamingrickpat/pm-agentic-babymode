@@ -11,8 +11,6 @@ public class ModConfig {
 		public Double miningSpeedMultiplier = 5.0;
 		public Boolean naturalRegeneration = false;
 		public Boolean pvp = false;
-		/** Items within this many blocks of a player are pulled into their inventory. 0 = vanilla only. */
-		public Double pickupRange = 6.0;
 	}
 
 	public static class EnvironmentConfig {
@@ -99,7 +97,6 @@ public class ModConfig {
 		if (player.miningSpeedMultiplier == null) player.miningSpeedMultiplier = 5.0;
 		if (player.naturalRegeneration == null) player.naturalRegeneration = false;
 		if (player.pvp == null) player.pvp = false;
-		if (player.pickupRange == null) player.pickupRange = 6.0;
 
 		if (environment == null) environment = new EnvironmentConfig();
 		if (environment.drowningTimeMultiplier == null) environment.drowningTimeMultiplier = 10.0;
